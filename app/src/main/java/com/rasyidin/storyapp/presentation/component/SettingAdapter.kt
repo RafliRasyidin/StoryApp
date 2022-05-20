@@ -32,7 +32,7 @@ class SettingAdapter : ListAdapter<Setting, SettingAdapter.ItemViewHolder>(diffC
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SettingAdapter.ItemViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val binding = ItemSettingBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ItemViewHolder(binding)
     }
