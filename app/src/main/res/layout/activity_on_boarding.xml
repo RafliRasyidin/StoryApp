@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layoutDescription="@xml/activity_on_boarding_scene"
+    tools:context=".presentation.on_boarding.OnBoardingActivity">
+
+    <ImageView
+        android:id="@+id/img_on_boarding_1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/on_boarding_1"
+        tools:ignore="ContentDescription" />
+
+    <ImageView
+        android:id="@+id/img_on_boarding_2"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/on_boarding_2"
+        tools:ignore="ContentDescription" />
+
+    <ImageView
+        android:id="@+id/img_on_boarding_3"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/on_boarding_3"
+        tools:ignore="ContentDescription" />
+
+    <View
+        android:id="@+id/blur_on_boarding"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:alpha=".5"
+        android:background="@drawable/bg_top_rounded"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/guideline2" />
+
+    <TextView
+        android:id="@+id/tv_message_1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:fontFamily="@font/sofia_pro_bold"
+        android:gravity="center"
+        android:text="@string/on_boarding_message_1"
+        android:textColor="@color/white"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toTopOf="@id/img_tab_1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/blur_on_boarding"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <TextView
+        android:id="@+id/tv_message_2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/sofia_pro_bold"
+        android:gravity="center"
+        android:text="@string/on_boarding_message_2"
+        android:textColor="@color/white"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/blur_on_boarding" />
+
+    <TextView
+        android:id="@+id/tv_message_3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/sofia_pro_bold"
+        android:gravity="center"
+        android:text="@string/on_boarding_message_3"
+        android:textColor="@color/white"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/blur_on_boarding" />
+
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:id="@+id/img_tab_1"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        app:altSrc="@drawable/ic_tab"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/img_tab_2"
+        app:layout_constraintHeight_percent=".01"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_message_1"
+        app:layout_constraintWidth_percent=".1"
+        app:srcCompat="@drawable/ic_tab_active" />
+
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:id="@+id/img_tab_2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="16dp"
+        app:altSrc="@drawable/ic_tab_active"
+        app:layout_constraintBottom_toBottomOf="@id/img_tab_1"
+        app:layout_constraintEnd_toStartOf="@id/img_tab_3"
+        app:layout_constraintHeight_percent=".01"
+        app:layout_constraintStart_toEndOf="@id/img_tab_1"
+        app:layout_constraintTop_toTopOf="@id/img_tab_1"
+        app:layout_constraintWidth_percent=".1"
+        app:srcCompat="@drawable/ic_tab" />
+
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:id="@+id/img_tab_3"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:altSrc="@drawable/ic_tab_active"
+        app:layout_constraintBottom_toBottomOf="@id/img_tab_2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent=".01"
+        app:layout_constraintStart_toEndOf="@id/img_tab_2"
+        app:layout_constraintTop_toTopOf="@id/img_tab_1"
+        app:layout_constraintWidth_percent=".1"
+        app:srcCompat="@drawable/ic_tab" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/sofia_pro_bold"
+        android:text="@string/next"
+        app:cornerRadius="10dp"
+        app:layout_constraintEnd_toEndOf="@id/img_tab_3"
+        app:layout_constraintStart_toStartOf="@id/img_tab_1"
+        app:layout_constraintTop_toBottomOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent=".7" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="1" />
+
+</androidx.constraintlayout.motion.widget.MotionLayout>

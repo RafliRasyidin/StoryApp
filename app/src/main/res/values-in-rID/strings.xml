@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--Label App-->
+    <string name="on_boarding_message_1">Bagikan semua moment anda dengan yang lain</string>
+    <string name="on_boarding_message_2">Jelajahi moment-moment keren dari orang lain</string>
+    <string name="on_boarding_message_3">Bangun komunitas yang baik dengan orang lain</string>
+    <string name="next">Selanjutnya</string>
+    <string name="hint_et_password">Password</string>
+    <string name="login_to">Masuk ke</string>
+    <string name="sign_up_to">Registrasi ke</string>
+    <string name="email">Email</string>
+    <string name="login">Sign In</string>
+    <string name="register">Sign Up</string>
+    <string name="label_register">Belum punya akun?</string>
+    <string name="label_login">Sudah punya akun?</string>
+    <string name="hint_name">Nama</string>
+    <string name="hint_add_caption">Tambahkan Caption…</string>
+    <string name="permission_camera_rationale">Izin akses kamera dibutuhkan untuk menampilkan kamera</string>
+    <string name="choose_pict">Pilih gambar</string>
+    <string name="ok">OK</string>
+    <string name="message_logout">Apakah kamu yakin ingin logout?</string>
+    <string name="language">Bahasa</string>
+    <string name="logout">Logout</string>
+    <string name="setting">Pengaturan</string>
+    <string name="cancel">Batalkan</string>
+
+    <!--Success message-->
+    <string name="success_register">Berhasil membuat akun</string>
+    <string name="success_post">Berhasil memposting story</string>
+    <string name="success_logout">Berhasil logout</string>
+
+    <!--Error Message-->
+    <string name="error_password">Password kurang dari 6 karakter!</string>
+    <string name="error_email">Email tidak valid</string>
+    <string name="error_login">Email anda salah</string>
+    <string name="permission_denied">Izin ditolak</string>
+    <string name="suggest_permission">Silahkan beri izin akses kamera untuk melanjutkan</string>
+    <string name="error_camera">Gagal menampilkan kamera</string>
+    <string name="error_take_pict">Gagal mengambil gambar</string>
+    <string name="error_post">Gagal memposting story</string>
+
+    <!--Error Response-->
+    <string name="user_not_found">User tidak ditemukan</string>
+    <string name="invalid_password">Password anda salah</string>
+    <string name="email_already_take">Email sudah digunakan</string>
+    <string name="error_email_already_taken">Email sudah digunakan</string>
+    <string name="invalid_email">Email anda tidak valid</string>
+    <string name="invalid_password_register">Password kurang dari 6 karakter</string>
+    <string name="post_story">Post Story</string>
+    <string name="post">Post</string>
+    <string name="camera">Kamera</string>
+    <string name="gallery">Gallery</string>
+</resources>

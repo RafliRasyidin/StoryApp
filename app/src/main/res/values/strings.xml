@@ -1,0 +1,67 @@
+<resources>
+    <string name="app_name" translatable="false">Story App</string>
+
+    <!--Preference Key-->
+    <string name="SESSION_MANAGER_PREF_NAME" translatable="false">SessionManagerPreference</string>
+    <string name="TOKEN_PREF_KEY" translatable="false">TokenPrefKey</string>
+    <string name="LOGIN_STATE_KEY" translatable="false">LoginStateKey</string>
+    <string name="ON_BOARDING_STATE_KEY" translatable="false">onBoardingStateKey</string>
+
+    <!--Label App-->
+    <string name="on_boarding_message_1">Share your moment with others</string>
+    <string name="on_boarding_message_2">Explore the moments shared by others</string>
+    <string name="on_boarding_message_3">Build a good community with others here</string>
+    <string name="next">Next</string>
+    <string name="hint_et_password">Password</string>
+    <string name="login_to">Sign in to</string>
+    <string name="sign_up_to">Sign up to</string>
+    <string name="email">Email</string>
+    <string name="login">Sign In</string>
+    <string name="register">Sign Up</string>
+    <string name="label_register">Don\'t have an account?</string>
+    <string name="label_login">Already have an account?</string>
+    <string name="hint_name">Name</string>
+    <string name="hint_add_caption">Add Caption…</string>
+    <string name="permission_camera_rationale">Camera permission is needed to show the camera preview.</string>
+    <string name="choose_pict">Choose an Image</string>
+    <string name="ok">OK</string>
+    <string name="message_logout">Are you sure you want to logout?</string>
+    <string name="language">Language</string>
+    <string name="logout">Logout</string>
+    <string name="setting">Setting</string>
+    <string name="cancel">Cancel</string>
+
+    <!--Success message-->
+    <string name="success_register">Successfully created an account</string>
+    <string name="success_post">Successfully posted a story</string>
+    <string name="success_logout">Logout successfully</string>
+
+
+    <!--Error Message-->
+    <string name="error_password">Password less than 6 characters!</string>
+    <string name="error_email">Email is invalid</string>
+    <string name="error_login">Your email or password is wrong</string>
+    <string name="permission_denied">Permission Denied</string>
+    <string name="suggest_permission">Please give permission for camera to continue</string>
+    <string name="error_camera">Failed to display camera</string>
+    <string name="error_take_pict">Failed to take a pict</string>
+    <string name="error_post">Failed to post a story</string>
+
+    <!--Error Response-->
+    <string name="user_not_found">User not found</string>
+    <string name="invalid_password">Invalid password</string>
+    <string name="email_already_take">Email is already taken</string>
+    <string name="error_email_already_taken">Email is already taken</string>
+    <string name="invalid_email">must be a valid email</string>
+    <string name="invalid_password_register">Password must be at least 6 characters long</string>
+    <string name="post_story">Post Story</string>
+    <string name="post">Post</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
+
+    <!--Transition Name-->
+    <string name="img_story_transition" translatable="false">imageStoryTransition</string>
+    <string name="name_transition" translatable="false">nameTransition</string>
+    <string name="description_transition" translatable="false">descTransition</string>
+    <string name="date_transition" translatable="false">dateTransition</string>
+</resources>
