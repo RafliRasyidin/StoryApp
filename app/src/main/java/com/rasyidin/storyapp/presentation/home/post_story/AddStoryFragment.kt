@@ -28,7 +28,7 @@ import com.rasyidin.storyapp.data.utils.onSuccess
 import com.rasyidin.storyapp.databinding.FragmentAddStoryBinding
 import com.rasyidin.storyapp.presentation.component.DialogSuccess
 import com.rasyidin.storyapp.presentation.component.FragmentBinding
-import com.rasyidin.storyapp.presentation.utils.reduceFileImageCamera
+import com.rasyidin.storyapp.presentation.utils.reduceAndRotateFileImageCamera
 import com.rasyidin.storyapp.presentation.utils.reduceFileImageGallery
 import com.rasyidin.storyapp.presentation.utils.rotateBitmap
 import com.rasyidin.storyapp.presentation.utils.uriToFile
@@ -138,7 +138,7 @@ class AddStoryFragment :
                 val imageFile = if (isImageGallery) {
                     reduceFileImageGallery(getFile as File)
                 } else {
-                    reduceFileImageCamera(getFile as File)
+                    reduceAndRotateFileImageCamera(getFile as File)
                 }
                 val description = binding.etCaption.text.toString()
                 viewModel.postStory(description, imageFile)

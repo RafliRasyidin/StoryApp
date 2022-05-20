@@ -85,7 +85,7 @@ fun uriToFile(selectedImage: Uri, context: Context): File {
     return myFile
 }
 
-fun reduceFileImageCamera(file: File): File {
+fun reduceAndRotateFileImageCamera(file: File): File {
     val bitmap = BitmapFactory.decodeFile(file.path)
     var compressQuality = 100
     var streamLength: Int
