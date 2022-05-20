@@ -14,11 +14,12 @@ sealed class ResultState<T : Any> {
 suspend fun <T : Any> fetch(call: suspend () -> Response<T>): Flow<ResultState<Response<T>>> =
     flow {
         emit(ResultState.Loading())
-        if (call.invoke().isSuccessful) {
-            emit(ResultState.Success(call.invoke()))
+        val result = call.invoke()
+        if (result.isSuccessful) {
+            emit(ResultState.Success(result))
         } else {
-            emit(ResultState.Error(call.invoke().errorBody()?.string().toString()))
-            call.invoke().errorBody()?.close()
+            emit(ResultState.Error(result.errorBody()?.string().toString()))
+            result.errorBody()?.close()
         }
     }.catch { error ->
         emit(ResultState.Error(error.message.toString()))
