@@ -23,6 +23,7 @@
     <string name="logout">Logout</string>
     <string name="setting">Pengaturan</string>
     <string name="cancel">Batalkan</string>
+    <string name="ask_post_location">Posting cerita dengan lokasi kamu saat ini?</string>
 
     <!--Success message-->
     <string name="success_register">Berhasil membuat akun</string>
@@ -38,6 +39,9 @@
     <string name="error_camera">Gagal menampilkan kamera</string>
     <string name="error_take_pict">Gagal mengambil gambar</string>
     <string name="error_post">Gagal memposting story</string>
+    <string name="location_not_found">Lokasi tidak ditemukan</string>
+    <string name="gps_warning">Kamu harus mengaktifkan GPS untuk menambahkan lokasi</string>
+    <string name="gps_warning_2">Kamu harus mengaktifkan GPS untuk melihat lokasi kamu saat ini</string>
 
     <!--Error Response-->
     <string name="user_not_found">User tidak ditemukan</string>

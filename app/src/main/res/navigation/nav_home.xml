@@ -27,6 +27,13 @@
             app:exitAnim="@anim/slide_down"
             app:popEnterAnim="@anim/slide_up"
             app:popExitAnim="@anim/slide_down" />
+        <action
+            android:id="@+id/action_homeFragment_to_storyByLocationMapFragment"
+            app:destination="@id/storyByLocationMapFragment"
+            app:enterAnim="@anim/slide_up"
+            app:exitAnim="@anim/slide_down"
+            app:popEnterAnim="@anim/slide_up"
+            app:popExitAnim="@anim/slide_down"/>
     </fragment>
     <fragment
         android:id="@+id/addStoryFragment"
@@ -92,4 +99,9 @@
         android:name="com.rasyidin.storyapp.presentation.authentication.AuthActivity"
         android:label="activity_auth"
         tools:layout="@layout/activity_auth" />
+    <fragment
+        android:id="@+id/storyByLocationMapFragment"
+        android:name="com.rasyidin.storyapp.presentation.home.StoryByLocationMapFragment"
+        android:label="fragment_story_by_location_map"
+        tools:layout="@layout/fragment_story_by_location_map" />
 </navigation>

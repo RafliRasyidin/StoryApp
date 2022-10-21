@@ -1,8 +1,8 @@
 package com.rasyidin.storyapp.presentation.home
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -10,18 +10,15 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
+import androidx.paging.cachedIn
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.rasyidin.storyapp.R
-import com.rasyidin.storyapp.data.model.Story
-import com.rasyidin.storyapp.data.utils.ResultState
-import com.rasyidin.storyapp.data.utils.isLoading
-import com.rasyidin.storyapp.data.utils.onFailure
-import com.rasyidin.storyapp.data.utils.onSuccess
 import com.rasyidin.storyapp.databinding.FragmentHomeBinding
 import com.rasyidin.storyapp.presentation.component.FragmentBinding
 import com.rasyidin.storyapp.presentation.component.StoryAdapter
+import com.rasyidin.storyapp.presentation.component.withDateFormat
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -88,32 +85,45 @@ class HomeFragment : FragmentBinding<FragmentHomeBinding>(FragmentHomeBinding::i
                 swipeRefresh.isRefreshing = false
                 viewModel.getStories()
             }
+
+            imgMap.setOnClickListener {
+                findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToStoryByLocationMapFragment())
+            }
         }
     }
 
     private fun observeStories() {
         lifecycleScope.launchWhenCreated {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.stories.collect { result ->
-
-                    handleLoading(result)
-
-                    result.onSuccess { stories ->
-                        storyAdapter.submitList(stories)
-                        binding.rvStory.smoothScrollToPosition(0)
-                    }
-
-                    result.onFailure { message ->
-                        Log.e("HomeFragment", message)
-                    }
+                viewModel.pagingStories.cachedIn(this).collect { result ->
+                    storyAdapter.submitData(result)
                 }
             }
         }
+
+        lifecycleScope.launchWhenCreated {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.loading.collect { isLoading ->
+                    handleLoading(isLoading)
+                }
+            }
+        }
+
+        lifecycleScope.launchWhenCreated {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.errorMessage.collect { message ->
+                    Toast.makeText(requireActivity(), message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+        val date = "2011-11-07"
+        date.withDateFormat()
     }
 
-    private fun handleLoading(result: ResultState<List<Story>>) {
+    private fun handleLoading(isLoading: Boolean) {
         binding.apply {
-            if (isLoading(result)) {
+            if (isLoading) {
                 shimmerStory.visibility = View.VISIBLE
                 rvStory.visibility = View.GONE
             } else {
@@ -122,8 +132,6 @@ class HomeFragment : FragmentBinding<FragmentHomeBinding>(FragmentHomeBinding::i
             }
         }
     }
-
-
 
     private fun setupAdapter() {
         binding.rvStory.apply {

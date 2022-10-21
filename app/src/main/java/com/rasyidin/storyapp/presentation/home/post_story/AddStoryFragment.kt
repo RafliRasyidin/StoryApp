@@ -1,16 +1,21 @@
 package com.rasyidin.storyapp.presentation.home.post_story
 
 import android.Manifest
+import android.annotation.SuppressLint
+import android.app.Activity.RESULT_CANCELED
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.content.Intent.ACTION_GET_CONTENT
+import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
+import android.location.Location
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -21,11 +26,14 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.android.gms.common.api.ResolvableApiException
+import com.google.android.gms.location.*
 import com.rasyidin.storyapp.R
 import com.rasyidin.storyapp.data.utils.onFailure
 import com.rasyidin.storyapp.data.utils.onLoading
 import com.rasyidin.storyapp.data.utils.onSuccess
 import com.rasyidin.storyapp.databinding.FragmentAddStoryBinding
+import com.rasyidin.storyapp.presentation.component.DialogAskPostWithLocation
 import com.rasyidin.storyapp.presentation.component.DialogSuccess
 import com.rasyidin.storyapp.presentation.component.FragmentBinding
 import com.rasyidin.storyapp.presentation.utils.reduceAndRotateFileImageCamera
@@ -37,6 +45,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.util.concurrent.TimeUnit
 
 @AndroidEntryPoint
 class AddStoryFragment :
@@ -49,18 +58,15 @@ class AddStoryFragment :
 
     private var isImageGallery = false
 
-    private val launcherIntentGallery = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        if (result.resultCode == RESULT_OK) {
-            val selectedImage = result?.data?.data as Uri
-            val myFile = uriToFile(selectedImage, requireActivity())
-            getFile = myFile
-            isImageGallery = true
-            binding.imgStory.setImageBitmap(BitmapFactory.decodeFile(getFile?.path))
-            hideImagePlaceHolder()
-        }
-    }
+    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+
+    private lateinit var locationRequest: LocationRequest
+
+    private lateinit var locationCallback: LocationCallback
+
+    private var deviceLocation: Location? = null
+
+    private var isSendLocation = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -69,7 +75,7 @@ class AddStoryFragment :
             getFile = args.image
         }
 
-        if (!isAllPermissionsGranted()) requestPermission()
+        if (!isPermissionGranted(REQUIRED_PERMISSIONS_CAMERA.first())) requestPermissionCamera()
 
         onView()
 
@@ -78,6 +84,18 @@ class AddStoryFragment :
         observePostStory()
 
         postStory()
+
+        fusedLocationProviderClient =
+            LocationServices.getFusedLocationProviderClient(requireActivity())
+
+        if (savedInstanceState != null) {
+            isSendLocation = savedInstanceState.getBoolean(SEND_LOCATION_STATE)
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean(SEND_LOCATION_STATE, isSendLocation)
     }
 
     private fun onView() {
@@ -92,6 +110,10 @@ class AddStoryFragment :
 
             btnGallery.setOnClickListener {
                 openGallery()
+            }
+
+            btnAddLocation.setOnClickListener {
+                showDialogPostWithLocation()
             }
         }
     }
@@ -121,6 +143,19 @@ class AddStoryFragment :
         }
     }
 
+    private val launcherIntentGallery = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == RESULT_OK) {
+            val selectedImage = result?.data?.data as Uri
+            val myFile = uriToFile(selectedImage, requireActivity())
+            getFile = myFile
+            isImageGallery = true
+            binding.imgStory.setImageBitmap(BitmapFactory.decodeFile(getFile?.path))
+            hideImagePlaceHolder()
+        }
+    }
+
     private fun openGallery() {
         val intent = Intent().apply {
             action = ACTION_GET_CONTENT
@@ -141,7 +176,13 @@ class AddStoryFragment :
                     reduceAndRotateFileImageCamera(getFile as File)
                 }
                 val description = binding.etCaption.text.toString()
-                viewModel.postStory(description, imageFile)
+                if (isSendLocation) {
+                    val latitude = deviceLocation?.latitude as Double
+                    val longitude = deviceLocation?.longitude as Double
+                    viewModel.postStory(description, imageFile, latitude, longitude)
+                } else {
+                    viewModel.postStory(description, imageFile)
+                }
                 binding.progressBar.isVisible = true
             }
         }
@@ -195,7 +236,94 @@ class AddStoryFragment :
                 }
             }
         }
+    }
 
+    private fun showDialogPostWithLocation() {
+        if (childFragmentManager.findFragmentByTag(DialogAskPostWithLocation.TAG) == null) {
+            val dialogAskPostWithLocation = DialogAskPostWithLocation.newInstance()
+            dialogAskPostWithLocation.show(childFragmentManager, DialogAskPostWithLocation.TAG)
+
+            createLocationRequest()
+            createLocationCallback()
+
+            dialogAskPostWithLocation.onClickYes = {
+                getDeviceLocation()
+            }
+
+            dialogAskPostWithLocation.onClickCancel = {
+                binding.animLocation.apply {
+                    /*stopLocationUpdates()*/
+                    visibility = View.GONE
+                    cancelAnimation()
+                }
+            }
+        }
+    }
+
+    private val requestPermissionLocationLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+            when {
+                permissions[Manifest.permission.ACCESS_FINE_LOCATION]
+                    ?: false -> getDeviceLocation()
+                permissions[Manifest.permission.ACCESS_COARSE_LOCATION]
+                    ?: false -> getDeviceLocation()
+                else -> {}
+            }
+        }
+
+    private val resolutionLauncher = registerForActivityResult(
+        ActivityResultContracts.StartIntentSenderForResult()
+    ) { result ->
+        when (result.resultCode) {
+            RESULT_OK -> {
+                createLocationRequest()
+                createLocationCallback()
+                binding.animLocation.apply {
+                    visibility = View.VISIBLE
+                    playAnimation()
+                }
+            }
+            RESULT_CANCELED -> {
+                Toast.makeText(
+                    requireActivity(),
+                    getString(R.string.gps_warning),
+                    Toast.LENGTH_SHORT
+                ).show()
+                isSendLocation = false
+            }
+        }
+    }
+
+    private fun createLocationRequest() {
+        locationRequest = LocationRequest.create().apply {
+            interval = TimeUnit.SECONDS.toMillis(1)
+            maxWaitTime = TimeUnit.SECONDS.toMillis(1)
+            priority = Priority.PRIORITY_HIGH_ACCURACY
+        }
+
+        val builder = LocationSettingsRequest.Builder()
+            .addLocationRequest(locationRequest)
+
+        val client = LocationServices.getSettingsClient(requireActivity())
+        client.checkLocationSettings(builder.build())
+            .addOnSuccessListener {
+                getDeviceLocation()
+            }
+            .addOnFailureListener { exception ->
+                if (exception is ResolvableApiException) {
+                    try {
+                        resolutionLauncher.launch(
+                            IntentSenderRequest.Builder(exception.resolution).build()
+                        )
+                    } catch (sendException: IntentSender.SendIntentException) {
+                        Toast.makeText(
+                            requireActivity(),
+                            sendException.localizedMessage,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
     }
 
     @Deprecated("Deprecated in Java")
@@ -206,37 +334,86 @@ class AddStoryFragment :
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == REQUEST_CODE_PERMISSIONS) {
-            if (!isAllPermissionsGranted()) {
-                Toast.makeText(
-                    requireActivity(),
-                    getString(R.string.permission_denied),
-                    Toast.LENGTH_SHORT
-                ).show()
-                Toast.makeText(
-                    requireActivity(),
-                    getString(R.string.suggest_permission),
-                    Toast.LENGTH_SHORT
-                ).show()
-                findNavController().popBackStack()
+        when (requestCode) {
+            REQUEST_CODE_PERMISSIONS_CAMERA -> {
+                if (!isPermissionGranted(REQUIRED_PERMISSIONS_CAMERA.first())) {
+                    Toast.makeText(
+                        requireActivity(),
+                        getString(R.string.permission_denied),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    Toast.makeText(
+                        requireActivity(),
+                        getString(R.string.suggest_permission),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    findNavController().popBackStack()
+                }
+            }
+            REQUEST_CODE_PERMISSIONS_LOCATION -> {
+
             }
         }
     }
 
-    private fun requestPermission() {
+    private fun createLocationCallback() {
+        locationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult) {
+                deviceLocation = locationResult.lastLocation
+                isSendLocation = true
+                Log.d(TAG, deviceLocation.toString())
+                binding.animLocation.apply {
+                    visibility = View.VISIBLE
+                    playAnimation()
+                }
+            }
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun getDeviceLocation() {
+        if (isPermissionGranted(ACCESS_FINE_LOCATION) && isPermissionGranted(ACCESS_COARSE_LOCATION)) {
+            fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
+                if (location != null) {
+                    deviceLocation = location
+                    isSendLocation = true
+                    Log.d(TAG, deviceLocation.toString())
+                    binding.animLocation.apply {
+                        visibility = View.VISIBLE
+                        playAnimation()
+                    }
+                } else {
+                    Toast.makeText(
+                        requireActivity(),
+                        getString(R.string.location_not_found),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        } else {
+            requestPermissionLocationLauncher.launch(
+                arrayOf(
+                    ACCESS_FINE_LOCATION,
+                    ACCESS_COARSE_LOCATION
+                )
+            )
+        }
+    }
+
+    private fun requestPermissionCamera() {
         ActivityCompat.requestPermissions(
             requireActivity(),
-            REQUIRED_PERMISSIONS,
-            REQUEST_CODE_PERMISSIONS
+            REQUIRED_PERMISSIONS_CAMERA,
+            REQUEST_CODE_PERMISSIONS_CAMERA
         )
     }
 
-    private fun isAllPermissionsGranted() = REQUIRED_PERMISSIONS.all {
+    private fun isPermissionGranted(permission: String) =
         ContextCompat.checkSelfPermission(
             requireActivity(),
-            it
+            permission
         ) == PackageManager.PERMISSION_GRANTED
-    }
+
 
     private fun startCamera() {
         findNavController().navigate(AddStoryFragmentDirections.actionAddStoryFragmentToCameraFragment())
@@ -248,9 +425,15 @@ class AddStoryFragment :
         _binding = null
     }
 
+
     companion object {
-        private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
-        private const val REQUEST_CODE_PERMISSIONS = 10
+        private val REQUIRED_PERMISSIONS_CAMERA = arrayOf(Manifest.permission.CAMERA)
+        private const val REQUEST_CODE_PERMISSIONS_CAMERA = 10
+        private const val REQUEST_CODE_PERMISSIONS_LOCATION = 11
+        private const val ACCESS_FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION
+        private const val ACCESS_COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION
         private val TAG = AddStoryFragment::class.simpleName
+
+        private const val SEND_LOCATION_STATE = "locationState"
     }
 }

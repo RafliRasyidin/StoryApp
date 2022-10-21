@@ -16,10 +16,19 @@ interface StoryService {
         @Part imageFile: MultipartBody.Part
     ): Response<ApiResponse>
 
+    @POST("stories")
+    @Multipart
+    suspend fun postStory(
+        @Part("description") description: RequestBody,
+        @Part imageFile: MultipartBody.Part,
+        @Part("lat") latitude: RequestBody? = null,
+        @Part("lon") longitude: RequestBody? = null
+    ): Response<ApiResponse>
+
     @GET("stories")
     suspend fun getStories(
         @Query("page") page: Int = 1,
         @Query("size") size: Int = 15,
-        @Query("location") withLocation: Boolean = false
+        @Query("location") withLocation: Int = 1
     ): Response<StoriesResponse>
 }

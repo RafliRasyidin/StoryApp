@@ -1,5 +1,7 @@
 package com.rasyidin.storyapp.data.utils
 
+import androidx.paging.Pager
+import androidx.paging.PagingData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import retrofit2.Response
@@ -21,6 +23,15 @@ suspend fun <T : Any> fetch(call: suspend () -> Response<T>): Flow<ResultState<R
             emit(ResultState.Error(result.errorBody()?.string().toString()))
             result.errorBody()?.close()
         }
+    }.catch { error ->
+        emit(ResultState.Error(error.message.toString()))
+    }.flowOn(Dispatchers.IO)
+
+suspend fun <T : Any> fetchPaging(call: suspend () -> Pager<Int, T>): Flow<ResultState<Pager<Int, T>>> =
+    flow {
+        emit(ResultState.Loading())
+        val result = call.invoke()
+        emit(ResultState.Success(result))
     }.catch { error ->
         emit(ResultState.Error(error.message.toString()))
     }.flowOn(Dispatchers.IO)

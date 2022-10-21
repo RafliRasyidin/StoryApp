@@ -26,4 +26,12 @@ class PostStoryViewModel @Inject constructor(private val repository: StoryReposi
             }
         }
     }
+
+    fun postStory(description: String, imageFile: File, latitude: Double, longitude: Double) {
+        viewModelScope.launch {
+            repository.postStory(description, imageFile, latitude, longitude).collect { resultState ->
+                _postStory.send(resultState)
+            }
+        }
+    }
 }

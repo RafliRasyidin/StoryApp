@@ -30,12 +30,14 @@
     <string name="logout">Logout</string>
     <string name="setting">Setting</string>
     <string name="cancel">Cancel</string>
+    <string name="ask_post_location">Post a story with your current location?</string>
+    <string name="yes" translatable="false">Yes</string>
+    <string name="no" translatable="false">No</string>
 
     <!--Success message-->
     <string name="success_register">Successfully created an account</string>
     <string name="success_post">Successfully posted a story</string>
     <string name="success_logout">Logout successfully</string>
-
 
     <!--Error Message-->
     <string name="error_password">Password less than 6 characters!</string>
@@ -46,6 +48,9 @@
     <string name="error_camera">Failed to display camera</string>
     <string name="error_take_pict">Failed to take a pict</string>
     <string name="error_post">Failed to post a story</string>
+    <string name="location_not_found">Location not found</string>
+    <string name="gps_warning">You must enable GPS to add location</string>
+    <string name="gps_warning_2">You must enable GPS to see your location</string>
 
     <!--Error Response-->
     <string name="user_not_found">User not found</string>
@@ -64,4 +69,5 @@
     <string name="name_transition" translatable="false">nameTransition</string>
     <string name="description_transition" translatable="false">descTransition</string>
     <string name="date_transition" translatable="false">dateTransition</string>
+    <string name="add_location">Add Location</string>
 </resources>

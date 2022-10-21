@@ -6,6 +6,8 @@ import com.rasyidin.storyapp.data.repository.StoryRepository
 import com.rasyidin.storyapp.data.repository.StoryRepositoryImp
 import com.rasyidin.storyapp.data.source.local.LocalDataSource
 import com.rasyidin.storyapp.data.source.local.SessionManager
+import com.rasyidin.storyapp.data.source.local.StoryRemoteMediator
+import com.rasyidin.storyapp.data.source.local.db.StoryDatabase
 import com.rasyidin.storyapp.data.source.remote.network.AuthService
 import com.rasyidin.storyapp.data.source.remote.network.StoryService
 import dagger.Module
@@ -26,8 +28,8 @@ class RepositoryModule {
 
     @Provides
     @Singleton
-    fun providesStoryRepository(service: StoryService): StoryRepository {
-        return StoryRepositoryImp(service)
+    fun providesStoryRepository(service: StoryService, database: StoryDatabase): StoryRepository {
+        return StoryRepositoryImp(service, database)
     }
 
     @Provides
@@ -35,4 +37,5 @@ class RepositoryModule {
     fun providesLocalDataSource(sessionManager: SessionManager): LocalDataSource {
         return LocalDataSource(sessionManager)
     }
+
 }

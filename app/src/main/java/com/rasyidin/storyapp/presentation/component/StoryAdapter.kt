@@ -3,6 +3,7 @@ package com.rasyidin.storyapp.presentation.component
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -10,7 +11,7 @@ import com.bumptech.glide.Glide
 import com.rasyidin.storyapp.data.model.Story
 import com.rasyidin.storyapp.databinding.ItemStoryBinding
 
-class StoryAdapter : ListAdapter<Story, StoryAdapter.StoryViewHolder>(diffCallback) {
+class StoryAdapter : PagingDataAdapter<Story, StoryAdapter.StoryViewHolder>(diffCallback) {
 
     var onItemClick: ((Story, View, View, View, View) -> Unit)? = null
 
@@ -39,10 +40,12 @@ class StoryAdapter : ListAdapter<Story, StoryAdapter.StoryViewHolder>(diffCallba
 
     override fun onBindViewHolder(holder: StoryViewHolder, position: Int) {
         val story = getItem(position)
-        holder.bind(story)
-        holder.binding.apply {
-            root.setOnClickListener {
-                onItemClick?.invoke(story, imgStory, tvName, tvDescription, tvDate)
+        story?.let {
+            holder.bind(story)
+            holder.binding.apply {
+                root.setOnClickListener {
+                    onItemClick?.invoke(story, imgStory, tvName, tvDescription, tvDate)
+                }
             }
         }
     }

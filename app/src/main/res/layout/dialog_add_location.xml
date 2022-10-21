@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/bg_dialog">
+
+    <TextView
+        android:id="@+id/tv_ask_location"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        style="@style/TextMedium18"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/ask_post_location"/>
+
+    <TextView
+        android:id="@+id/btn_yes"
+        style="@style/TextSemiBold18"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/yes"
+        android:textColor="@color/blue"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintEnd_toEndOf="@+id/tv_ask_location"
+        app:layout_constraintTop_toBottomOf="@id/tv_ask_location"/>
+
+    <TextView
+        android:id="@+id/btn_no"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/btn_yes"
+        app:layout_constraintEnd_toStartOf="@id/btn_yes"
+        app:layout_constraintBottom_toBottomOf="@id/btn_yes"
+        android:layout_marginEnd="32dp"
+        android:text="@string/no"
+        style="@style/TextSemiBold18"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
